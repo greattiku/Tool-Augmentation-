@@ -17,7 +17,8 @@ from tools import (
 load_dotenv()
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-HF_API_KEY = os.getenv("HF_API_KEY")
+# HF_API_KEY = os.getenv("HF_API_KEY")
+os.environ["HF_TOKEN"] = os.getenv("HF_API_KEY")
 
 if not OPENROUTER_API_KEY:
     raise RuntimeError("OPENROUTER_API_KEY not set")
@@ -25,13 +26,14 @@ os.environ["OPENAI_API_KEY"] = OPENROUTER_API_KEY
 os.environ["OPENAI_API_BASE"] = "https://openrouter.ai/api/v1"
 
 
-
-# Only index if vector DB doesn't already exist
-if not os.path.exists("chroma_db"):
-    print("Vector store not found. Indexing documents...")
-    index_documents()
+hf_token = os.getenv("HF_API_KEY") or os.getenv("HF_TOKEN")
+if hf_token:
+    os.environ["HF_TOKEN"] = hf_token
 else:
-    print("Vector store already exists. Skipping indexing.")
+    raise RuntimeError("HF_TOKEN not set. Please set it in .env or in environment.")
+
+print("Indexing documents...")
+index_documents()
 
 
 prompt = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else ""

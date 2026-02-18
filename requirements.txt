@@ -6,5 +6,6 @@ sentence-transformers
 python-dotenv
 pymupdf
 langchain-core
-
-
+langchain-huggingface
+langchain_chroma
+langchain_text_splitters
